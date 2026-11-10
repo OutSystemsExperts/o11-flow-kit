@@ -1,9 +1,9 @@
 ---
-name: o11-rite-setup
-description: Sets up "the rite" in the current project for building in OutSystems 11 through the Service Studio MCP. Writes AGENTS.md (seven rules), CLAUDE.md (the @AGENTS.md import) and docs/outsystems/lessons-log.md without overwriting anything, then checks that the Service Studio MCP server, the official servicestudio-mcp-oml skill and Superpowers are installed, and prints the exact command for whatever is missing. Use it once per project, right after installing the o11-rite-kit skills, or whenever the user types /o11-rite-setup, says "set up the rite", "set up the O11 kit", "configurar o kit", or asks which prerequisites are still missing.
+name: o11-flow-setup
+description: Sets up "the flow" in the current project for building in OutSystems 11 through the Service Studio MCP. Writes AGENTS.md (seven rules), CLAUDE.md (the @AGENTS.md import) and docs/outsystems/lessons-log.md without overwriting anything, then checks that the Service Studio MCP server, the official servicestudio-mcp-oml skill and Superpowers are installed, and prints the exact command for whatever is missing. Use it once per project, right after installing the o11-flow-kit skills, or whenever the user types /o11-flow-setup, says "set up the flow", "set up the O11 kit", "configurar o kit", or asks which prerequisites are still missing.
 ---
 
-# Set up the rite in this project
+# Set up the flow in this project
 
 Do the three parts in order and report at the end. Never overwrite a file the project already has, never delete anything, and do not install anything yourself: the user runs the commands.
 
@@ -40,7 +40,7 @@ Check each row and give it one of the states in the last column.
 | 2 | The `servicestudio` MCP server, registered and answering | Connected: tools whose names start with `mcp__servicestudio__` are available. Registered only: `claude mcp list` names `servicestudio` but its tools are not available. | In a terminal: `claude mcp add --transport http servicestudio http://127.0.0.1:41820/mcp --scope user` (with the URL the Service Studio dialog shows, if the port was changed). | connected / registered, not connected / missing |
 | 3 | The official skill `servicestudio-mcp-oml` | The skill is in your list of skills, or `servicestudio-mcp-oml/SKILL.md` exists in a folder your host reads skills from (`~/.claude/skills/`, the project's `.claude/skills/` or `.agents/skills/`). | In a terminal: `git clone https://github.com/OutSystems/outsystems11-mcp.git`, then, inside that folder, `bash scripts/install.sh` (Windows PowerShell: `powershell -ExecutionPolicy Bypass -File scripts\install.ps1`). | ok / missing |
 | 4 | Superpowers: brainstorming and the rest of the method | `superpowers:brainstorming` is in your list of skills. | Inside Claude Code: `/plugin install superpowers@claude-plugins-official`, then restart Claude Code. | ok / missing |
-| 5 | The pitfalls skill | `outsystems-mcp-pitfalls` is in your list of skills. | In a terminal, in the project root: `npx skills add alexandreafc/o11-rite-kit`. | ok / missing |
+| 5 | The pitfalls skill | `outsystems-mcp-pitfalls` is in your list of skills. | In a terminal, in the project root: `npx skills add alexandreafc/o11-flow-kit`. | ok / missing |
 
 Row 2, "registered, not connected", is not ready: say that Service Studio must be open with a module and its MCP server started (row 1), and that `/mcp reconnect servicestudio` inside Claude Code reconnects it. Never report the set-up as complete while row 1 is "not confirmed" or row 2 is anything but "connected".
 

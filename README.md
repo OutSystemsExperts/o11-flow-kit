@@ -1,21 +1,21 @@
-# o11-rite-kit
+# o11-flow-kit
 
-A starter kit for building in **OutSystems 11** with an AI coding agent, through the Service Studio MCP server. It gives the agent a routine to follow (the rite), seven house rules, and a skill with the pitfalls that already cost real rounds.
+A starter kit for building in **OutSystems 11** with an AI coding agent, through the Service Studio MCP server. It gives the agent a routine to follow (the flow), seven house rules, and a skill with the pitfalls that already cost real rounds.
 
 ```
-npx skills add alexandreafc/o11-rite-kit
+npx skills add alexandreafc/o11-flow-kit
 ```
 
 > A personal kit, shared as is. It is not an OutSystems product. The MCP server and the official skill belong to OutSystems: see [OutSystems/outsystems11-mcp](https://github.com/OutSystems/outsystems11-mcp).
 
-## The rite
+## The flow
 
 One task at a time, nine steps, in order:
 
 | # | Step | What happens |
 |---|---|---|
 | 1 | brainstorm | The agent asks before it builds: questions with options, not guesses. |
-| 2 | spec | What and why, before any Flow. You approve it. |
+| 2 | spec | What and why, before any logic is written. You approve it. |
 | 3 | adversarial | Someone who did not write the spec tries to break it; later, the plan too. |
 | 4 | plan | Small tasks, each born with its test. You approve it. |
 | 5 | test ✗ red | The tests are written against empty signatures and must fail on values, not on a compile error. |
@@ -81,13 +81,13 @@ Restart Claude Code, then type `/plugin` to check that `superpowers` is listed. 
 In a terminal, in the root of your project:
 
 ```
-npx skills add alexandreafc/o11-rite-kit
+npx skills add alexandreafc/o11-flow-kit
 ```
 
-It installs two skills into the project, under `.claude/skills/`: `outsystems-mcp-pitfalls` and `o11-rite-setup`. It also writes `skills-lock.json`, which records where they came from: commit it with the skills. The installer asks which skills and which agents to install for; run by an agent, it does not ask. To skip the questions and install for Claude Code only:
+It installs two skills into the project, under `.claude/skills/`: `outsystems-mcp-pitfalls` and `o11-flow-setup`. It also writes `skills-lock.json`, which records where they came from: commit it with the skills. The installer asks which skills and which agents to install for; run by an agent, it does not ask. To skip the questions and install for Claude Code only:
 
 ```
-npx skills add alexandreafc/o11-rite-kit -a claude-code -y
+npx skills add alexandreafc/o11-flow-kit -a claude-code -y
 ```
 
 It needs a recent Node.js: see the [skills CLI](https://github.com/vercel-labs/skills). With no Node.js, see [Without Node](#without-node).
@@ -97,10 +97,10 @@ It needs a recent Node.js: see the [skills CLI](https://github.com/vercel-labs/s
 Inside Claude Code, in the project:
 
 ```
-/o11-rite-setup
+/o11-flow-setup
 ```
 
-You can also just say "set up the rite". The skill writes three files and never overwrites one you already have:
+You can also just say "set up the flow". The skill writes three files and never overwrites one you already have:
 
 | File | What it is |
 |---|---|
@@ -130,7 +130,7 @@ Tip: you can type the terminal commands of steps 2, 3 and 5 inside Claude Code b
 
 ## The seven rules
 
-The full text is in [`skills/o11-rite-setup/assets/AGENTS.md`](skills/o11-rite-setup/assets/AGENTS.md).
+The full text is in [`skills/o11-flow-setup/assets/AGENTS.md`](skills/o11-flow-setup/assets/AGENTS.md).
 
 1. Load the skills first.
 2. Read the lessons the skill has not absorbed.
@@ -145,7 +145,7 @@ The full text is in [`skills/o11-rite-setup/assets/AGENTS.md`](skills/o11-rite-s
 | Path | What it is |
 |---|---|
 | `skills/outsystems-mcp-pitfalls/` | The skill: `SKILL.md` and `references/`. What already went wrong, with the reason for each item. |
-| `skills/o11-rite-setup/` | The setup skill. Its `assets/` folder holds `AGENTS.md`, `CLAUDE.md` and `lessons-log.template.md`. |
+| `skills/o11-flow-setup/` | The setup skill. Its `assets/` folder holds `AGENTS.md`, `CLAUDE.md` and `lessons-log.template.md`. |
 
 ## A light adversarial gate
 
@@ -178,16 +178,16 @@ What the vendors' documentation says (read on 2026-11-01), so you know where the
 | Codex | Yes | `.agents/skills` |
 | Kiro | Yes | `.kiro/skills`; custom agents load skills only through a `skill://` entry in `resources` |
 
-The skills installer of step 5 knows these locations: pick your agent when it asks, or name it, for example `npx skills add alexandreafc/o11-rite-kit -a codex`. The official skill of step 3 installs for Claude Code only; for another host, copy its folder by hand as the OutSystems repository explains.
+The skills installer of step 5 knows these locations: pick your agent when it asks, or name it, for example `npx skills add alexandreafc/o11-flow-kit -a codex`. The official skill of step 3 installs for Claude Code only; for another host, copy its folder by hand as the OutSystems repository explains.
 
 ## Without Node
 
 Clone this repository next to your project and copy the two skill folders by hand:
 
 ```
-git clone https://github.com/alexandreafc/o11-rite-kit.git
+git clone https://github.com/alexandreafc/o11-flow-kit.git
 mkdir -p <project>/.claude/skills
-cp -R o11-rite-kit/skills/outsystems-mcp-pitfalls o11-rite-kit/skills/o11-rite-setup <project>/.claude/skills/
+cp -R o11-flow-kit/skills/outsystems-mcp-pitfalls o11-flow-kit/skills/o11-flow-setup <project>/.claude/skills/
 ```
 
 Then continue at step 6.
@@ -196,7 +196,7 @@ Then continue at step 6.
 
 ```
 npx skills update
-npx skills remove outsystems-mcp-pitfalls o11-rite-setup
+npx skills remove outsystems-mcp-pitfalls o11-flow-setup
 ```
 
 Removing the skills leaves `AGENTS.md`, `CLAUDE.md` and your lessons log in place.
