@@ -204,3 +204,7 @@ Removing the skills leaves `AGENTS.md`, `CLAUDE.md` and your lessons log in plac
 ## The skill is a snapshot
 
 This skill is a snapshot taken on 2026-11-01. The lessons log it came from keeps growing, and not every lesson is in the skill yet: keep your own log and read it before planning.
+
+## License
+
+MIT: see [LICENSE](LICENSE). The official `servicestudio-mcp-oml` skill and Superpowers are separate projects with their own licenses.
