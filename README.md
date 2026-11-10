@@ -28,7 +28,9 @@ Two human touches remain today, and the plan knows when each one comes: approvin
 
 ## Set up, in order
 
-Steps 1 to 4 are once per machine. Steps 5 and 6 are once per project. Each step says where you type it.
+Seven steps. Steps 1 to 4 are once per machine, steps 5 and 6 are once per project, and step 7 is your first task. Each step says where you type it.
+
+Before you start you need [Claude Code](https://code.claude.com/docs) installed and signed in. Service Studio runs on your machine, so Claude Code has to run on that same machine: the terminal, the Desktop app or an IDE, not the web version.
 
 ### 1. Service Studio
 
@@ -107,6 +109,8 @@ You can also just say "set up the rite". The skill writes three files and never 
 | `docs/outsystems/lessons-log.md` | Your own lessons log, from the template. |
 
 Then it checks steps 1 to 5 and tells you the command for whatever is still missing.
+
+**Restart Claude Code after it**, so the new `AGENTS.md` loads: a session that was already running does not pick the files up.
 
 ### 7. Your first task
 
