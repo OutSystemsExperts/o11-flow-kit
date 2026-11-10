@@ -20,9 +20,11 @@ One task at a time, nine steps, in order:
 | 4 | plan | Small tasks, each born with its test. You approve it. |
 | 5 | signatures | The agent publishes every signature first: name, inputs and outputs, empty inside. You tick the dependencies once, one batch per consumer module. |
 | 6 | test ✗ red | The tests are written against the empty signatures and must fail on values, not on a compile error. |
-| 7 | MCP writes and publishes | A script generates the body, the agent sends it through the MCP and reads back what landed. Then it publishes: the producer module first, then a refresh and a publish of each consumer. |
+| 7 | logic | The agent writes the logic: a script generates the body, the agent sends it through the MCP and reads back what landed. Then it publishes: the producer module first, then a refresh and a publish of each consumer. |
 | 8 | test ✓ green | The same suite, now passing. |
 | 9 | review | Reviewer agents read the generated code; a human decides what is published. |
+
+The MCP is at work in steps 5, 6 and 7: the signatures, the tests and the logic are all written through it. A test is an action too, in the Tests module; a small REST runner executes the suite.
 
 Why step 5 exists: today the MCP cannot add a dependency from another module, so a person ticks it in Manage Dependencies. With every signature published first, that is one batch of ticks per consumer module instead of one stop per action. A new public element later needs a new batch.
 
