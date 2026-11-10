@@ -82,7 +82,13 @@ In a terminal, in the root of your project:
 npx skills add alexandreafc/o11-rite-kit
 ```
 
-It installs two skills into the project, under `.claude/skills/`: `outsystems-mcp-pitfalls` and `o11-rite-setup`. It also writes `skills-lock.json`, which records where they came from: commit it with the skills. The installer asks which skills and which agents to install for; run by an agent, it does not ask. It needs a recent Node.js: see the [skills CLI](https://github.com/vercel-labs/skills). With no Node.js, see [Without Node](#without-node).
+It installs two skills into the project, under `.claude/skills/`: `outsystems-mcp-pitfalls` and `o11-rite-setup`. It also writes `skills-lock.json`, which records where they came from: commit it with the skills. The installer asks which skills and which agents to install for; run by an agent, it does not ask. To skip the questions and install for Claude Code only:
+
+```
+npx skills add alexandreafc/o11-rite-kit -a claude-code -y
+```
+
+It needs a recent Node.js: see the [skills CLI](https://github.com/vercel-labs/skills). With no Node.js, see [Without Node](#without-node).
 
 ### 6. Set it up
 
