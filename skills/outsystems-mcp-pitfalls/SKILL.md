@@ -151,6 +151,7 @@ the applying. What held up:
   another route; the orchestrator and the user decide.
 - Brief each agent with the token, the exact module scope, what is already proven, the warnings that are accepted,
   the stop conditions, and ask for the lessons (symptom, cause, fix, cost) in its report.
+  The orchestrating session is the one that writes them to the lessons log (section 11), so the log has one writer.
 
 ## 6. Data model and logic
 
@@ -184,9 +185,10 @@ the applying. What held up:
   otherwise reads as a loss.
 - The runner is anonymous, so rules of the current user get a pure `...For` variant that takes the actor. If that
   variant is public, bind it to the session: with a signed-in user the actor must be that user (else NotAuthorized);
-  only without a session (runner, timers) is the actor believed. Otherwise any consumer module can act as anyone. The
-  runner never runs the signed-in branch: add an offline structural check of the generated flow and prove it fails
-  on a mutated copy.
+  without a session (runner, timers) the actor is believed only while an explicit switch is on, a Site Property that
+  is False before promotion (`references/generic-lessons.md`, G-017). Otherwise any consumer module can act as
+  anyone. The runner never runs the signed-in branch: add an offline structural check of the generated flow and
+  prove it fails on a mutated copy.
 - Offline checks that pay off: syntax-check the generated C# with the local dotnet SDK (wrap it as
   `Action<dynamic>`), and run your flow DSL through a small interpreter on the real test definitions, then
   mutation-test it.
@@ -229,8 +231,40 @@ the applying. What held up:
   before building functional behaviour, so design rework is not mixed with logic.
 - Before claiming something does not exist, check the remote branch/PRs, not only the local tree.
 
+## 11. Lessons: read, write, share
+
+Lessons live in three places: this skill (curated, already absorbed); `references/generic-lessons.md` (`G-NNN`,
+lessons that hold in any OutSystems 11 project built through the Service Studio MCP and are not folded in here yet),
+which an update of the kit replaces, so never edit it; and the project log, `docs/outsystems/lessons-log.md`
+(`L-NNN`), which is yours and append-only: a wrong entry is corrected by a new one that names the id it supersedes.
+
+- **Before planning**, from the project root: `node <this skill's folder>/scripts/lessons.mjs pending --area "<a>,<b>"`
+  for the areas you will touch (without `--area` it lists everything pending), then `show <id>` for each lesson.
+- **After anything that cost a round**, write the entry as JSON to a file and run
+  `lessons.mjs add --file entries.json`: it checks the entry, gives it the next id and appends it. Set `scope`:
+  `generic` if the lesson would hold in any OutSystems 11 project built through the Service Studio MCP, `project` if
+  it only makes sense in this one (its business rules, data, people or environment). Fields, areas and statuses:
+  `assets/lessons-log.template.md` of `o11-flow-setup`.
+- **Sharing** a generic lesson that no skill covers (`add` prints a hint for it), in this order:
+  1. Ask the user whether to share it, for that one lesson, in this conversation, right after `add` wrote it. Say that
+     a shared lesson becomes a public issue in the kit's repository, posted under their GitHub account and readable
+     by anyone. A yes for one lesson is not a yes for the next. Never offer to share an older entry unless the user
+     asks for it.
+  2. On a yes, generalise it first: no names of applications, modules, customers or people, no URLs, paths or
+     tokens. The script refuses URLs, host names (three or more parts, or followed by a path), e-mail and IPv4
+     addresses, @-mentions, absolute and home paths, GUIDs, common token formats and long hexadecimal strings, but
+     it cannot see names, two-part domain names, relative paths, IPv6 addresses or short secrets such as passwords.
+     If the entry already reads that way, run `share <L-id>`; otherwise write the generalised area, title, symptom,
+     cause and resolution to a file and run `share --file lesson.json`. Show the user the exact text.
+  3. `share` sends nothing: the user reads the text first, because the link it prints carries the text to GitHub,
+     then opens the link and submits the issue. Do not open the link or submit the issue yourself (no
+     `gh issue create`, no browser): the user submits it. If the link shows a 404 page, the user opens a new issue
+     with the Lesson template and pastes the text.
+  4. If the user says no, do not ask again for that lesson.
+- Without Node.js, read the two files by hand and append new entries to the project log in the same format.
+
 ## When something fails and it is not listed here
 
 Probe, do not re-read: `eSpace => { throw new Exception("PROBE:ok"); }` proves the session is healthy and returns
-text; then bisect one risky member per call. Record the new finding in `references/` with the date and the
-symptom so the next session does not repeat it.
+text; then bisect one risky member per call. Record the new finding in the project lessons log (section 11) so the
+next session does not repeat it, and never write inside this skill's folder: an update replaces it.

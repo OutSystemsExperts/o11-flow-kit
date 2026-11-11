@@ -5,7 +5,7 @@ description: Sets up "the flow" in the current project for building in OutSystem
 
 # Set up the flow in this project
 
-Do the three parts in order and report at the end. Never overwrite a file the project already has, never delete anything, and do not install anything yourself: the user runs the commands.
+Do the three parts in order and report at the end. Never overwrite a file the project already has, never delete anything, and do not install anything yourself: the user runs the commands. The one exception is an outdated rule 2 in `AGENTS.md`, which you replace only on the user's yes (part 1).
 
 ## 1. Write the project files
 
@@ -18,7 +18,8 @@ Do the three parts in order and report at the end. Never overwrite a file the pr
 
 1. `AGENTS.md`
    - Missing: copy `assets/AGENTS.md` as it is.
-   - Present, and it already holds these rules: leave it alone. It holds them if it has the heading "Rules for building in OutSystems 11 through the Service Studio MCP", or a rule that starts with "**Load the skills first.**" and one that starts with "**Signatures first.**".
+   - Present, and it already holds these rules: leave it alone, apart from the next case. It holds them if it has the heading "Rules for building in OutSystems 11 through the Service Studio MCP", or a rule that starts with "**Load the skills first.**" and one that starts with "**Signatures first.**".
+   - Present with these rules, but the rule that starts with "**Read the lessons the skill has not absorbed.**" does not mention `lessons.mjs`: that rule has a newer text. Tell the user, show them rule 2 of `assets/AGENTS.md`, and replace that one rule with it only if they agree. This is the only place where you change a line the project already has; leave everything else in the file as it is.
    - Present without them: append the whole content of `assets/AGENTS.md` at the end, after one blank line. Do not edit the rules the project already had.
 2. `CLAUDE.md`
    - Missing: copy `assets/CLAUDE.md` as it is.
@@ -40,7 +41,7 @@ Check each row and give it one of the states in the last column.
 | 2 | The `servicestudio` MCP server, registered and answering | Connected: tools whose names start with `mcp__servicestudio__` are available. Registered only: `claude mcp list` names `servicestudio` but its tools are not available. | In a terminal: `claude mcp add --transport http servicestudio http://127.0.0.1:41820/mcp --scope user` (with the URL the Service Studio dialog shows, if the port was changed). | connected / registered, not connected / missing |
 | 3 | The official skill `servicestudio-mcp-oml` | The skill is in your list of skills, or `servicestudio-mcp-oml/SKILL.md` exists in a folder your host reads skills from (`~/.claude/skills/`, the project's `.claude/skills/` or `.agents/skills/`). | In a terminal: `git clone https://github.com/OutSystems/outsystems11-mcp.git`, then, inside that folder, `bash scripts/install.sh` (Windows PowerShell: `powershell -ExecutionPolicy Bypass -File scripts\install.ps1`). | ok / missing |
 | 4 | Superpowers: brainstorming and the rest of the method | `superpowers:brainstorming` is in your list of skills. | Inside Claude Code: `/plugin install superpowers@claude-plugins-official`, then restart Claude Code. | ok / missing |
-| 5 | The pitfalls skill | `outsystems-mcp-pitfalls` is in your list of skills. | In a terminal, in the project root: `npx skills add alexandreafc/o11-flow-kit`. | ok / missing |
+| 5 | The pitfalls skill | `outsystems-mcp-pitfalls` is in your list of skills. | In a terminal, in the project root: `npx skills add OutSystemsExperts/o11-flow-kit`. | ok / missing |
 
 Row 2, "registered, not connected", is not ready: say that Service Studio must be open with a module and its MCP server started (row 1), and that `/mcp reconnect servicestudio` inside Claude Code reconnects it. Never report the set-up as complete while row 1 is "not confirmed" or row 2 is anything but "connected".
 
@@ -50,5 +51,6 @@ Answer in the user's language, in a few lines:
 
 - the folder you treated as the project root;
 - which of the three files you created, which you extended and which you left alone;
+- whether rule 2 of `AGENTS.md` is current (it mentions `lessons.mjs`) and, if it was not, whether the user had it replaced;
 - the five prerequisites in the order of the table, each with its state and, when it is not ready, its command;
 - the next steps, in this order: **restart the agent**, so it loads `AGENTS.md` (a running session does not pick up the new files); open a **copy** of a module in Service Studio (the MCP write tools are a Beta feature); check the connection by asking for a summary of the open module, and approve the dialog Service Studio shows; then start the first task with `/superpowers:brainstorming` followed by one sentence that describes something small.

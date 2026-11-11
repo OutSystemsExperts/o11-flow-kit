@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Node ${{ matrix.node }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # Windows and Linux on every supported Node; macOS once, because the script is developed there.
+        os: [ubuntu-latest, windows-latest]
+        node: ['18', '22', '24']
+        include:
+          - os: macos-latest
+            node: '22'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      # The files are named: a directory argument does not behave the same on every Node version.
+      - name: Tests
+        run: node --test tests/lessons.test.mjs tests/docs.test.mjs tests/shipped.test.mjs
+
+      # The pitfalls skill as a project has it: copied under .claude/skills/ and run from the project
+      # root, with the log made from the template that the setup skill installs. The script must find
+      # its generic lessons next to itself and the project log by walking up, on every operating system.
+      - name: The installed copy runs from the project root
+        shell: bash
+        run: |
+          project="$RUNNER_TEMP/project"
+          mkdir -p "$project/.claude/skills" "$project/docs/outsystems"
+          cp -R skills/outsystems-mcp-pitfalls "$project/.claude/skills/"
+          cp skills/o11-flow-setup/assets/lessons-log.template.md "$project/docs/outsystems/lessons-log.md"
+          printf '%s' '{"date":"2026-11-11","area":"ui","title":"CI check","symptom":"A symptom","cause":"A cause","resolution":"A resolution","skill":"not in any skill yet","scope":"project"}' > "$project/entry.json"
+          cd "$project"
+          cli=.claude/skills/outsystems-mcp-pitfalls/scripts/lessons.mjs
+
+          pending=$(node "$cli" pending 2>&1)
+          echo "$pending"
+          grep -q '^Generic lessons (' <<< "$pending"
+          grep -q '^Project lessons to read (0)' <<< "$pending"
+          if grep -qi 'there is no' <<< "$pending"; then
+            echo "The installed copy did not find its files."
+            exit 1
+          fi
+
+          dry=$(node "$cli" add --dry-run --file entry.json 2>&1)
+          echo "$dry"
+          grep -q '^### L-001' <<< "$dry"

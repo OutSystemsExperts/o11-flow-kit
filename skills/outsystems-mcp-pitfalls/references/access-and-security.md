@@ -10,8 +10,11 @@ rule that depends on who the user is, and before the UI of such rules.
 - **Bind the pure variant to the session.** If it is public (it must be, for the Tests module to see it), any
   consumer module can pass `ActorAppRoleId = Admin`. First step of every write `...For`: if `GetUserId() <>
   NullIdentifier()`, require the actor to be the session's user (lower-cased e-mail, same app role, same bootstrap
-  list), else `NotAuthorized`. Without a session (runner, timers) the actor is believed; that is acceptable only while
-  no anonymous endpoint can reach the action (here the only exposed REST APIs are token-protected).
+  list), else `NotAuthorized`. Without a session (runner, timers) the actor is believed only while an explicit switch
+  is on: a Site Property that is True in development and in the environment that runs the tests, and False before
+  promotion. A list of token-protected REST APIs does not make "no session" safe, because the data actions of blocks
+  can reach a producer action too: probe the block endpoints with a request that carries no cookie
+  (`generic-lessons.md`, G-017).
 - **The signed-in branch is dead code for the runner.** Guard it with an offline structural check of the generated
   flow (does every write `...For` open with the binding?), and prove the check fails on a mutated copy.
 - **Order of checks in a write:** the target exists and is visible to the actor (else `ProjectNotFound`, so a
@@ -20,7 +23,8 @@ rule that depends on who the user is, and before the UI of such rules.
 - **Read models gate field by field**, from the original server code: here people lists and credential fragments
   went to everyone who could view a project, while the source stripped them for non-editors. A secret split into
   parts needs a rule per part. Audit every public read for cross-project or cross-user data (logs without a project,
-  user-role lists, AI configuration) and gate it the same way (no session = system).
+  user-role lists, AI configuration) and gate it the same way (no session counts as the system only while that
+  switch is on).
 
 ## UI side
 - **Hiding is not access control.** For each role write down which calls the server refuses and which the UI only

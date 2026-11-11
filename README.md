@@ -3,7 +3,7 @@
 A starter kit for building in **OutSystems 11** with an AI coding agent, through the Service Studio MCP server. It gives the agent a routine to follow (the flow), seven house rules, and a skill with the pitfalls that already cost real rounds.
 
 ```
-npx skills add alexandreafc/o11-flow-kit
+npx skills add OutSystemsExperts/o11-flow-kit
 ```
 
 > A personal kit, shared as is. It is not an OutSystems product. The MCP server and the official skill belong to OutSystems: see [OutSystems/outsystems11-mcp](https://github.com/OutSystems/outsystems11-mcp).
@@ -85,13 +85,13 @@ Restart Claude Code, then type `/plugin` to check that `superpowers` is listed. 
 In a terminal, in the root of your project:
 
 ```
-npx skills add alexandreafc/o11-flow-kit
+npx skills add OutSystemsExperts/o11-flow-kit
 ```
 
 It installs two skills into the project, under `.claude/skills/`: `outsystems-mcp-pitfalls` and `o11-flow-setup`. It also writes `skills-lock.json`, which records where they came from: commit it with the skills. The installer asks which skills and which agents to install for; run by an agent, it does not ask. To skip the questions and install for Claude Code only:
 
 ```
-npx skills add alexandreafc/o11-flow-kit -a claude-code -y
+npx skills add OutSystemsExperts/o11-flow-kit -a claude-code -y
 ```
 
 It needs a recent Node.js: see the [skills CLI](https://github.com/vercel-labs/skills). With no Node.js, see [Without Node](#without-node).
@@ -110,7 +110,7 @@ You can also just say "set up the flow". The skill writes three files and never 
 |---|---|
 | `AGENTS.md` | The seven rules. If you already have one, the rules are added at the end. |
 | `CLAUDE.md` | One line, `@AGENTS.md`, so Claude Code loads the same rules. If you already have one, the line is added at the top. |
-| `docs/outsystems/lessons-log.md` | Your own lessons log, from the template. |
+| `docs/outsystems/lessons-log.md` | Your own lessons log, from the template: the entry format at the top, no entries yet. |
 
 Then it checks steps 1 to 5 and tells you the command for whatever is still missing.
 
@@ -144,12 +144,43 @@ The full text is in [`skills/o11-flow-setup/assets/AGENTS.md`](skills/o11-flow-s
 6. Generate large Model API code with scripts kept in git.
 7. Plan before you build, and let someone attack the plan.
 
+## The lessons loop
+
+Lessons live in three places:
+
+| Place | What it is | Who writes it | What an update does to it |
+|---|---|---|---|
+| `outsystems-mcp-pitfalls`: `SKILL.md` and the other files of `references/` | The curated lessons, already absorbed into the skill. | The kit's maintainers. | Replaces it. |
+| `outsystems-mcp-pitfalls`: `references/generic-lessons.md` | Lessons that hold in any OutSystems 11 project built through the Service Studio MCP and are not in `SKILL.md` yet. | The kit's maintainers, from the shared lessons they accept. | Replaces it, so never edit it in a project. |
+| `docs/outsystems/lessons-log.md`, in your project | Your project's own log, append-only. | The agent, and you, whenever something costs a round. | Nothing: an update never touches it. |
+
+The agent runs four commands, from the project root:
+
+```
+node .claude/skills/outsystems-mcp-pitfalls/scripts/lessons.mjs pending --area "ui,charts"
+node .claude/skills/outsystems-mcp-pitfalls/scripts/lessons.mjs show G-001 L-004
+node .claude/skills/outsystems-mcp-pitfalls/scripts/lessons.mjs add --file entries.json
+node .claude/skills/outsystems-mcp-pitfalls/scripts/lessons.mjs share L-004
+```
+
+`pending` lists what to read before planning: every generic lesson, and the entries of your log that no skill covers yet. `show` prints whole entries. `add` checks new entries, gives them the next ids and appends them to your log. `share` prepares one lesson for the kit's maintainers. `lessons.mjs help` lists every option. With another host, use the folder it reads skills from (see [Hosts](#hosts)).
+
+### Sharing a lesson
+
+When a new lesson would hold in any OutSystems 11 project and no skill covers it, the agent asks you first whether to share it, one lesson at a time, right after it writes the lesson to your log. A shared lesson becomes a public issue in the kit's repository, posted under your GitHub account and readable by anyone. On a yes, it writes a generalised version, without names of applications, modules, customers or people, and `share` prints the text and a link to a new issue in the kit's repository, prefilled with it. Read the text before you open the link: the link carries the text to GitHub. You submit the issue yourself: the agent does not open the link or submit it for you, and nothing is sent automatically. If the link shows a 404 page, open a new issue with the Lesson template and paste the text. Only the area, title, symptom, cause and resolution are shared, and the script refuses text that holds URLs, host names (three or more parts, or followed by a path), e-mail or IPv4 addresses, @-mentions, absolute or home paths, GUIDs, common token formats or long hexadecimal strings. It cannot see names, two-part domain names, relative paths, IPv6 addresses or short secrets such as passwords: the agent leaves those out itself. The maintainers fold the lessons they accept into `references/generic-lessons.md`, and every project gets them with the next update.
+
+For the maintainers: an accepted lesson gets the next free `G` id, and an id is never renumbered or used again, because project logs may cite it. When a lesson is folded into `SKILL.md`, its entry leaves `generic-lessons.md` and its id is retired.
+
 ## What is in this repository
 
 | Path | What it is |
 |---|---|
 | `skills/outsystems-mcp-pitfalls/` | The skill: `SKILL.md` and `references/`. What already went wrong, with the reason for each item. |
+| `skills/outsystems-mcp-pitfalls/references/generic-lessons.md` | The generic lessons that are not in `SKILL.md` yet. |
+| `skills/outsystems-mcp-pitfalls/scripts/` | `lessons.mjs`, the lessons script: Node.js 18 or later, no dependencies. |
 | `skills/o11-flow-setup/` | The setup skill. Its `assets/` folder holds `AGENTS.md`, `CLAUDE.md` and `lessons-log.template.md`. |
+| `tests/` | The tests of the lessons script and of the commands the Markdown files show. Not installed. |
+| `.github/` | The issue template for a shared lesson and the CI workflow. Not installed. |
 
 ## A light adversarial gate
 
@@ -182,19 +213,28 @@ What the vendors' documentation says (read on 2026-11-01), so you know where the
 | Codex | Yes | `.agents/skills` |
 | Kiro | Yes | `.kiro/skills`; custom agents load skills only through a `skill://` entry in `resources` |
 
-The skills installer of step 5 knows these locations: pick your agent when it asks, or name it, for example `npx skills add alexandreafc/o11-flow-kit -a codex`. The official skill of step 3 installs for Claude Code only; for another host, copy its folder by hand as the OutSystems repository explains.
+The skills installer of step 5 knows these locations: pick your agent when it asks, or name it, for example `npx skills add OutSystemsExperts/o11-flow-kit -a codex`. The official skill of step 3 installs for Claude Code only; for another host, copy its folder by hand as the OutSystems repository explains.
 
 ## Without Node
 
-Clone this repository next to your project and copy the two skill folders by hand:
+Clone this repository next to your project and copy the two skill folders by hand. Run the commands in the folder that holds your project, with the project's folder name in place of `<project>`:
 
 ```
-git clone https://github.com/alexandreafc/o11-flow-kit.git
+git clone https://github.com/OutSystemsExperts/o11-flow-kit.git
 mkdir -p <project>/.claude/skills
 cp -R o11-flow-kit/skills/outsystems-mcp-pitfalls o11-flow-kit/skills/o11-flow-setup <project>/.claude/skills/
 ```
 
+On Windows PowerShell the last two lines are:
+
+```
+New-Item -ItemType Directory -Force <project>\.claude\skills
+Copy-Item -Recurse o11-flow-kit\skills\outsystems-mcp-pitfalls, o11-flow-kit\skills\o11-flow-setup <project>\.claude\skills\
+```
+
 Then continue at step 6.
+
+The lessons script needs Node.js 18 or later. Without it, the agent reads `references/generic-lessons.md` and your lessons log by hand, and writes new entries in the same format.
 
 ## Updating and removing
 
@@ -203,11 +243,13 @@ npx skills update
 npx skills remove outsystems-mcp-pitfalls o11-flow-setup
 ```
 
+An update replaces the skills, the lessons script and the generic lessons; it never touches your project's lessons log. Run `/o11-flow-setup` again after an update: it shows whether rule 2 of your `AGENTS.md` has a newer text, and replaces that rule only if you agree.
+
 Removing the skills leaves `AGENTS.md`, `CLAUDE.md` and your lessons log in place.
 
 ## The skill is a snapshot
 
-This skill is a snapshot taken on 2026-11-01. The lessons log it came from keeps growing, and not every lesson is in the skill yet: keep your own log and read it before planning.
+`SKILL.md` is a snapshot taken on 2026-11-01 from one case's lessons log. The generic lessons in `references/generic-lessons.md` were added on 2026-11-11 from the same log, and lessons that users share arrive with later updates, once the maintainers accept them. Not every lesson is in the skill yet: keep your own log and read it before planning.
 
 ## License
 
