@@ -6,7 +6,12 @@ A starter kit for building in **OutSystems 11** with an AI coding agent, through
 npx skills add OutSystemsExperts/o11-flow-kit
 ```
 
-> A personal kit, shared as is. It is not an OutSystems product. The MCP server and the official skill belong to OutSystems: see [OutSystems/outsystems11-mcp](https://github.com/OutSystems/outsystems11-mcp).
+> Created and maintained by [Alexandre Costa](https://github.com/alexandreafc), and shared as is. It is not an OutSystems product. The MCP server and the official skill belong to OutSystems: see [OutSystems/outsystems11-mcp](https://github.com/OutSystems/outsystems11-mcp).
+
+The kit builds on two projects, which you install yourself in steps 3 and 4:
+
+- [`servicestudio-mcp-oml`](https://github.com/OutSystems/outsystems11-mcp/tree/main/servicestudio-mcp-oml), the official OutSystems skill for the Service Studio MCP. The pitfalls skill of this kit is a delta on top of it.
+- [Superpowers](https://github.com/obra/superpowers), the skills that give the flow its method: brainstorming, plans, test-first and review.
 
 ## The flow
 
@@ -68,7 +73,7 @@ On Windows PowerShell the last line is:
 powershell -ExecutionPolicy Bypass -File scripts\install.ps1
 ```
 
-This is the path the OutSystems repository documents. It copies the skill, its `docs/` folder included, to your user skills folder. The pitfalls skill of this kit is a delta on top of it and searches that `docs/` folder.
+This is the path the OutSystems repository documents. It copies the [official skill](https://github.com/OutSystems/outsystems11-mcp/tree/main/servicestudio-mcp-oml), its `docs/` folder included, to your user skills folder. The pitfalls skill of this kit is a delta on top of it and searches that `docs/` folder.
 
 ### 4. Superpowers: brainstorming and the rest of the method
 
@@ -251,6 +256,10 @@ Removing the skills leaves `AGENTS.md`, `CLAUDE.md` and your lessons log in plac
 
 `SKILL.md` is a snapshot taken on 2026-11-01 from one case's lessons log. The generic lessons in `references/generic-lessons.md` were added on 2026-11-11 from the same log, and lessons that users share arrive with later updates, once the maintainers accept them. Not every lesson is in the skill yet: keep your own log and read it before planning.
 
+## Author and maintainer
+
+Created by [Alexandre Costa](https://github.com/alexandreafc), who also maintains it. Questions, corrections and lessons are welcome as [issues](https://github.com/OutSystemsExperts/o11-flow-kit/issues).
+
 ## License
 
-MIT: see [LICENSE](LICENSE). The official `servicestudio-mcp-oml` skill and Superpowers are separate projects with their own licenses.
+MIT, copyright (c) 2026 [Alexandre Costa](https://github.com/alexandreafc): see [LICENSE](LICENSE). The official [`servicestudio-mcp-oml`](https://github.com/OutSystems/outsystems11-mcp/tree/main/servicestudio-mcp-oml) skill and [Superpowers](https://github.com/obra/superpowers) are separate projects with their own licenses.
